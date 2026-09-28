@@ -103,8 +103,6 @@ def get_base_ydl_opts() -> Dict[str, Any]:
         "quiet": True,
         "no_warnings": True,
         "ffmpeg_location": FFMPEG_PATH,
-        # Bypass bot detection
-        "extractor_args": {"youtube": {"player_client": ["web"]}},
     }
     if COOKIES_FILE.exists() and COOKIES_FILE.stat().st_size > 0:
         opts["cookiefile"] = str(COOKIES_FILE)
