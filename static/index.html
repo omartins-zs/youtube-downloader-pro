@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Video & Audio Downloader Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background Glow FX -->
+  <div class="glow-sphere sphere-1"></div>
+  <div class="glow-sphere sphere-2"></div>
+  <div class="glow-sphere sphere-3"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="navbar">
+      <div class="logo">
+        <div class="logo-icon">
+          <i class="fa-brands fa-youtube"></i>
+        </div>
+        <div class="logo-text">
+          <span class="brand-title">YT Downloader <span class="badge-pro">PRO</span></span>
+          <span class="brand-sub">Baixe vídeos em 4K e Áudios em MP3 320kbps</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="openFolderBtn" class="btn-secondary" title="Abrir pasta de downloads no computador">
+          <i class="fa-regular fa-folder-open"></i>
+          <span>Pasta de Downloads</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Search & Input Box -->
+      <section class="search-section">
+        <div class="search-card">
+          <div class="input-wrapper">
+            <i class="fa-solid fa-link input-icon"></i>
+            <input type="text" id="videoUrlInput" placeholder="Cole o link do vídeo do YouTube aqui (ex: https://youtube.com/watch?v=...)" autocomplete="off">
+            <button id="pasteBtn" class="btn-icon" title="Colar link da área de transferência">
+              <i class="fa-regular fa-paste"></i>
+            </button>
+            <button id="fetchBtn" class="btn-primary">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>Analisar</span>
+            </button>
+          </div>
+          <div class="quick-chips">
+            <span class="chip-label"><i class="fa-solid fa-bolt"></i> Dica rápida:</span>
+            <span class="chip" data-sample="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Exemplo Rickroll</span>
+            <span class="chip" data-sample="https://www.youtube.com/watch?v=kJQP7kiw5Fk">Despacito 4K</span>
+            <span class="chip" data-sample="https://www.youtube.com/watch?v=jfKfPfyJRdk">Lofi Girl Live</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Loading State -->
+      <div id="loadingState" class="state-card hidden">
+        <div class="loader-spinner"></div>
+        <p class="loader-title">Extraindo dados e qualidades do vídeo...</p>
+        <span class="loader-sub">Consultando yt-dlp e fluxos de alta definição</span>
+      </div>
+
+      <!-- Video Details & Download Options Panel -->
+      <section id="resultSection" class="result-section hidden">
+        <div class="video-preview-card">
+          <div class="thumb-container">
+            <img id="videoThumb" src="" alt="Thumbnail do vídeo">
+            <span id="videoDuration" class="duration-badge">00:00</span>
+          </div>
+          <div class="video-meta">
+            <h2 id="videoTitle" class="video-title">Título do Vídeo</h2>
+            <div class="meta-row">
+              <span id="videoChannel" class="meta-item"><i class="fa-solid fa-circle-user"></i> Canal</span>
+              <span id="videoViews" class="meta-item"><i class="fa-solid fa-eye"></i> 0 visualizações</span>
+            </div>
+            <p id="videoDesc" class="video-desc">Descrição breve...</p>
+          </div>
+        </div>
+
+        <!-- Format & Quality Selector Tabs -->
+        <div class="options-card">
+          <div class="format-tabs">
+            <button class="tab-btn active" data-tab="video">
+              <i class="fa-solid fa-film"></i> Vídeo (MP4 / Alta Resolução)
+            </button>
+            <button class="tab-btn" data-tab="audio">
+              <i class="fa-solid fa-music"></i> Apenas Áudio (MP3 / M4A)
+            </button>
+          </div>
+
+          <!-- Video Options Panel -->
+          <div id="videoOptionsTab" class="tab-content active">
+            <label class="section-label">Selecione a resolução desejada:</label>
+            <div id="videoQualityGrid" class="quality-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Audio Options Panel -->
+          <div id="audioOptionsTab" class="tab-content">
+            <label class="section-label">Selecione a qualidade do áudio:</label>
+            <div id="audioQualityGrid" class="quality-grid">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Download Trigger Action -->
+          <div class="download-action-bar">
+            <div class="selected-summary">
+              <span class="label">Selecionado:</span>
+              <span id="selectedOptionSummary" class="value">Vídeo MP4 (1080p Full HD)</span>
+            </div>
+            <button id="startDownloadBtn" class="btn-download">
+              <i class="fa-solid fa-download"></i>
+              <span>Baixar Agora</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Active Download Progress Card -->
+      <section id="progressSection" class="progress-section hidden">
+        <div class="progress-card">
+          <div class="progress-header">
+            <div class="task-info">
+              <i class="fa-solid fa-cloud-arrow-down pulsing-icon"></i>
+              <div>
+                <h4 id="progressTitle" class="task-title">Baixando vídeo...</h4>
+                <p id="progressStatus" class="task-status">Conectando aos servidores do YouTube...</p>
+              </div>
+            </div>
+            <span id="progressPercent" class="progress-percent">0%</span>
+          </div>
+
+          <div class="progress-bar-track">
+            <div id="progressBarFill" class="progress-bar-fill" style="width: 0%"></div>
+          </div>
+
+          <div class="progress-metrics">
+            <div class="metric">
+              <span class="m-label">Baixado</span>
+              <span id="progressDownloaded" class="m-val">0 MB / 0 MB</span>
+            </div>
+            <div class="metric">
+              <span class="m-label">Velocidade</span>
+              <span id="progressSpeed" class="m-val">-- MB/s</span>
+            </div>
+            <div class="metric">
+              <span class="m-label">Tempo Restante</span>
+              <span id="progressEta" class="m-val">--s</span>
+            </div>
+          </div>
+
+          <!-- Completed Actions -->
+          <div id="completedActions" class="completed-actions hidden">
+            <div class="success-badge">
+              <i class="fa-solid fa-circle-check"></i> Download Concluído com Sucesso!
+            </div>
+            <div class="btn-group">
+              <a id="browserDownloadBtn" class="btn-primary" href="#" download>
+                <i class="fa-solid fa-file-arrow-down"></i> Salvar no Navegador
+              </a>
+              <button id="openFolderFromProgressBtn" class="btn-secondary">
+                <i class="fa-regular fa-folder-open"></i> Abrir Pasta Local
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Downloads History -->
+      <section class="history-section">
+        <div class="history-header">
+          <h3><i class="fa-solid fa-clock-rotate-left"></i> Histórico de Downloads da Sessão</h3>
+          <span id="historyCount" class="history-badge">0 itens</span>
+        </div>
+        <div id="historyList" class="history-list">
+          <div class="empty-history">
+            <i class="fa-solid fa-inbox"></i>
+            <p>Nenhum download realizado ainda nesta sessão.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>Desenvolvido com Python, FastAPI & yt-dlp • Alta velocidade & conversão direta</p>
+    </footer>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

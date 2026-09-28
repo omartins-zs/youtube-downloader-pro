@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: youtube-downloader-pro
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: PORT
+        value: 10000

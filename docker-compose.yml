@@ -1,0 +1,24 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yt_downloader_app
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - APP_ENV=production
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8080
+      - DOWNLOADS_DIR=/app/downloads
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./downloads:/app/downloads
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
