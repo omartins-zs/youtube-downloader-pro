@@ -10,6 +10,11 @@ services:
       - APP_HOST=0.0.0.0
       - APP_PORT=8080
       - DOWNLOADS_DIR=/app/downloads
+    # DNS fixos e confiaveis: evita o erro intermitente
+    # "[Errno -5] No address associated with hostname"
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
     ports:
       # host:container  -> abra no navegador em http://localhost:8090
       - "8090:8080"
