@@ -29,12 +29,72 @@
         </div>
       </div>
       <div class="header-actions">
+        <button id="toggleCookiesBtn" class="btn-secondary" title="Configurar cookies do YouTube para evitar bloqueios">
+          <i class="fa-solid fa-cookie-bite"></i>
+          <span>Cookies</span>
+          <span id="cookieStatusDot" class="status-dot dot-red"></span>
+        </button>
         <button id="openFolderBtn" class="btn-secondary" title="Abrir pasta de downloads no computador">
           <i class="fa-regular fa-folder-open"></i>
           <span>Pasta de Downloads</span>
         </button>
       </div>
     </header>
+
+    <!-- Cookie Configuration Panel (collapsible) -->
+    <section id="cookiePanel" class="cookie-panel hidden">
+      <div class="cookie-card">
+        <div class="cookie-header">
+          <h3><i class="fa-solid fa-shield-halved"></i> Configurar Cookies do YouTube</h3>
+          <button id="closeCookiePanel" class="btn-icon-sm"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="cookie-alert" id="cookieAlert">
+          <i class="fa-solid fa-circle-info"></i>
+          <div>
+            <strong>Por que preciso de cookies?</strong>
+            <p>Servidores em nuvem (Render, AWS, etc.) usam IPs de datacenter que o YouTube bloqueia como "bot".
+            Enviando seus cookies do YouTube, o yt-dlp se autentica como seu navegador, desbloqueando os downloads.</p>
+          </div>
+        </div>
+
+        <div id="cookieCurrentStatus" class="cookie-status-bar">
+          <span class="cookie-status-text"><i class="fa-solid fa-circle-xmark" style="color:#ff4757"></i> Cookies não configurados</span>
+          <button id="deleteCookiesBtn" class="btn-danger-sm hidden">
+            <i class="fa-solid fa-trash-can"></i> Remover
+          </button>
+        </div>
+
+        <!-- Cookie Input Methods -->
+        <div class="cookie-methods">
+          <!-- Method 1: Upload file -->
+          <div class="cookie-method">
+            <h4><i class="fa-solid fa-file-arrow-up"></i> Opção 1: Enviar arquivo cookies.txt</h4>
+            <p class="method-desc">Exporte seus cookies do YouTube usando a extensão
+              <a href="https://chromewebstore.google.com/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc" target="_blank" rel="noopener">Get cookies.txt LOCALLY</a>
+              (Chrome) ou
+              <a href="https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/" target="_blank" rel="noopener">cookies.txt</a>
+              (Firefox).
+            </p>
+            <div class="upload-zone" id="uploadZone">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+              <span>Arraste o arquivo cookies.txt aqui ou clique para selecionar</span>
+              <input type="file" id="cookieFileInput" accept=".txt" hidden>
+            </div>
+          </div>
+
+          <!-- Method 2: Paste text -->
+          <div class="cookie-method">
+            <h4><i class="fa-regular fa-paste"></i> Opção 2: Colar conteúdo do cookies.txt</h4>
+            <p class="method-desc">Abra o arquivo cookies.txt exportado no bloco de notas, copie todo o conteúdo (Ctrl+A, Ctrl+C) e cole abaixo.</p>
+            <textarea id="cookiePasteArea" placeholder="# Netscape HTTP Cookie File&#10;.youtube.com&#9;TRUE&#9;/&#9;TRUE&#9;1700000000&#9;VISITOR_INFO1_LIVE&#9;valor..." rows="6"></textarea>
+            <button id="savePastedCookiesBtn" class="btn-primary btn-sm">
+              <i class="fa-solid fa-floppy-disk"></i> Salvar Cookies
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Main Content -->
     <main class="main-content">
@@ -66,6 +126,20 @@
         <div class="loader-spinner"></div>
         <p class="loader-title">Extraindo dados e qualidades do vídeo...</p>
         <span class="loader-sub">Consultando yt-dlp e fluxos de alta definição</span>
+      </div>
+
+      <!-- Cookie Error Banner -->
+      <div id="cookieErrorBanner" class="cookie-error-banner hidden">
+        <div class="banner-content">
+          <i class="fa-solid fa-lock"></i>
+          <div>
+            <strong>YouTube bloqueou este IP por detecção de bot</strong>
+            <p>Para resolver, clique no botão <strong>"Cookies"</strong> no topo e envie seus cookies do YouTube exportados do navegador.</p>
+          </div>
+        </div>
+        <button id="openCookiesFromBanner" class="btn-primary btn-sm">
+          <i class="fa-solid fa-cookie-bite"></i> Configurar Cookies
+        </button>
       </div>
 
       <!-- Video Details & Download Options Panel -->
@@ -100,7 +174,6 @@
           <div id="videoOptionsTab" class="tab-content active">
             <label class="section-label">Selecione a resolução desejada:</label>
             <div id="videoQualityGrid" class="quality-grid">
-              <!-- Dynamically populated -->
             </div>
           </div>
 
@@ -108,7 +181,6 @@
           <div id="audioOptionsTab" class="tab-content">
             <label class="section-label">Selecione a qualidade do áudio:</label>
             <div id="audioQualityGrid" class="quality-grid">
-              <!-- Dynamically populated -->
             </div>
           </div>
 
@@ -193,7 +265,7 @@
 
     <!-- Footer -->
     <footer class="footer">
-      <p>Desenvolvido com Python, FastAPI & yt-dlp • Alta velocidade & conversão direta</p>
+      <p>Desenvolvido com Python, FastAPI & yt-dlp &bull; Alta velocidade & conversão direta</p>
     </footer>
   </div>
 
