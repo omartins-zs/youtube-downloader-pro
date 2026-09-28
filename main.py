@@ -211,6 +211,8 @@ def get_video_info(req: VideoInfoRequest):
 
     ydl_opts = get_base_ydl_opts()
     ydl_opts["extract_flat"] = False
+    # Nao forcamos formato aqui: so queremos os metadados/lista de formatos.
+    # Forcar "best" quebra em videos que nao tem formato combinado unico.
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -338,17 +340,29 @@ def run_download_thread(task_id: str, url: str, format_type: str, quality: str):
                 }],
             })
     else:
+        # Preferimos SEMPRE H.264 (avc1) + AAC (m4a): tocam em qualquer player.
+        # Se nao houver nessa resolucao, caimos para outros codecs, mas o
+        # postprocessor abaixo re-codifica o audio para AAC garantindo som.
         if quality and quality.isdigit():
             h = int(quality)
-            ydl_opts.update({
-                "format": f"bestvideo[height<={h}]+bestaudio/best[height<={h}]/best",
-                "merge_output_format": "mp4",
-            })
+            fmt = (
+                f"bestvideo[height<={h}][ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/"
+                f"best[height<={h}][ext=mp4]/"
+                f"bestvideo[height<={h}]+bestaudio/"
+                f"best[height<={h}]/best"
+            )
         else:
-            ydl_opts.update({
-                "format": "bestvideo+bestaudio/best",
-                "merge_output_format": "mp4",
-            })
+            fmt = (
+                "bestvideo[ext=mp4][vcodec^=avc1]+bestaudio[ext=m4a]/"
+                "best[ext=mp4]/bestvideo+bestaudio/best"
+            )
+        ydl_opts.update({
+            "format": fmt,
+            "merge_output_format": "mp4",
+            # Copia o video (rapido, sem perda) e re-codifica o audio para AAC.
+            # Isso resolve o caso do audio Opus que sai mudo em varios players.
+            "postprocessor_args": {"merger": ["-c:v", "copy", "-c:a", "aac", "-b:a", "192k"]},
+        })
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:

@@ -1,43 +1,46 @@
-# 🎬 YouTube Downloader Pro
+# YouTube Downloader Pro
 
-Uma aplicação web moderna, rápida e de alta fidelidade para baixar vídeos e áudios do YouTube com qualidade máxima (até 4K Ultra HD e MP3 320kbps).
+Baixador de vídeos e áudios do YouTube com interface web. **Roda 100% local** — você só cola o link e baixa. Sem cookies, sem login.
 
----
+> **Por que rodar local?** O YouTube bloqueia IPs de datacenter (Render, AWS, etc.) pedindo *"Sign in to confirm you're not a bot"*, e só nesses casos são necessários cookies. Rodando na sua própria máquina, o YouTube vê seu IP normal e **não pede nada**.
 
-## ✨ Recursos
+## Como usar (Docker — recomendado)
 
-- **Resoluções de Vídeo**: 4K (2160p), 2K (1440p), Full HD (1080p), HD (720p), 480p, 360p no formato **MP4**.
-- **Extração de Áudio**: Conversão direta para **MP3 (320kbps, 192kbps, 128kbps)** e **M4A Original**.
-- **FFmpeg Integrado**: Processamento e mesclagem automática de áudio e vídeo de alta resolução sem necessidade de instalação manual adicional.
-- **Interface Dark Glassmorphism**: Design fluido, responsivo e moderno.
-- **Progresso em Tempo Real**: Barra de carregamento com velocidade (MB/s), porcentagem e tempo estimado (ETA).
-- **Download Direto ou Pasta Local**: Baixe diretamente pelo navegador ou abra a pasta local no Windows Explorer com 1 clique.
-- **Histórico de Sessão**: Acompanhe e baixe novamente os itens processados na sessão.
+Precisa apenas do **Docker Desktop** aberto.
 
----
+1. Dê duplo clique em **`docker-start.bat`** (ou rode no terminal):
+   ```bash
+   docker compose up -d --build
+   ```
+2. Acesse **http://localhost:8090**
+3. Cole o link do YouTube, escolha vídeo ou áudio e baixe.
 
-## 🚀 Como Iniciar
+Os arquivos baixados aparecem na pasta **`downloads/`**.
 
-### Opção 1: Pelo arquivo executável rápido (Windows)
-Basta dar dois cliques no arquivo:
-```cmd
-start.bat
-```
+Para parar: duplo clique em **`docker-stop.bat`** (ou `docker compose down`).
 
-### Opção 2: Pela Linha de Comando
-1. Instale as dependências:
+## Como usar (sem Docker — Python direto)
+
 ```bash
 pip install -r requirements.txt
-```
-2. Inicie a aplicação:
-```bash
 python main.py
 ```
-3. Abra no navegador:
-👉 **[http://127.0.0.1:8000](http://127.0.0.1:8000)**
+Acesse http://127.0.0.1:8000
 
----
+> Precisa do FFmpeg instalado (ou o pacote `imageio-ffmpeg`, já incluído nos requirements).
 
-## 🛠️ Tecnologias Utilizadas
-- **Backend**: Python 3, FastAPI, Uvicorn, yt-dlp, imageio-ffmpeg
-- **Frontend**: HTML5 Semântico, Vanilla CSS Moderno (Glassmorphism), JavaScript ES6+
+## Recursos
+
+- Download de vídeo (até 4K) e áudio (MP3 320/192/128 kbps ou M4A)
+- Progresso em tempo real
+- Histórico de downloads
+- Painel de cookies (opcional — só útil se um dia hospedar na nuvem)
+
+## Portas
+
+| Ambiente        | URL                      |
+|-----------------|--------------------------|
+| Docker local    | http://localhost:8090    |
+| Python direto   | http://127.0.0.1:8000    |
+
+> A porta 8090 foi escolhida para não conflitar com outros serviços na 8080.

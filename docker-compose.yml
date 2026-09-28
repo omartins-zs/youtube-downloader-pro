@@ -5,16 +5,16 @@ services:
       dockerfile: Dockerfile
     container_name: yt_downloader_app
     restart: unless-stopped
-    env_file:
-      - .env
     environment:
       - APP_ENV=production
       - APP_HOST=0.0.0.0
       - APP_PORT=8080
       - DOWNLOADS_DIR=/app/downloads
     ports:
-      - "8080:8080"
+      # host:container  -> abra no navegador em http://localhost:8090
+      - "8090:8080"
     volumes:
+      # tudo que baixar aparece nesta pasta do seu PC
       - ./downloads:/app/downloads
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8080/ || exit 1"]
